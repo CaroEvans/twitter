@@ -1,6 +1,6 @@
 class TweetsController < ApplicationController
   before_action :set_tweet, only: [:show, :edit, :update, :destroy]
-
+  before_action :check_owner, only: [:edit, :update, :destroy]
   # GET /tweets
   # GET /tweets.json
   def index
@@ -70,5 +70,11 @@ class TweetsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def tweet_params
       params.require(:tweet).permit(:content, :user_id)
+    end
+
+    def  check_owner
+      if current_user != @tweet.user
+      redirect_to tweets_url, notice: 'You are not authorized to perform that action.'
+      end
     end
 end
